@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from stellar_api import StellarApiClient
+from api_client import StellarApiClient
 
 
 @pytest.mark.live
@@ -24,4 +24,3 @@ class TestUserOrdersFetch:
         if res.json:
             assert res.json.get("success") is False
             assert "authorised" in res.json.get("message", "").lower()
-

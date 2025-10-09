@@ -6,7 +6,7 @@ from typing import Dict, Iterable, List, Tuple
 
 import pytest
 
-from stellar_api import StellarApiClient, ensure_api_available, unique_email
+from api_client import StellarApiClient, ensure_api_available, unique_email
 
 
 @pytest.fixture(scope="session")
@@ -87,4 +87,3 @@ def valid_ingredients_subset(all_ingredients: List[str]) -> List[str]:
 def invalid_ingredients() -> List[str]:
     # Clearly invalid hashes
     return ["invalid_hash_1", "12345", "deadbeefcafebabe"]
-

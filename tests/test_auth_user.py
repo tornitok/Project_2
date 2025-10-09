@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from stellar_api import StellarApiClient, unique_email
+from api_client import StellarApiClient, unique_email
 
 
 @pytest.mark.live
@@ -37,4 +37,3 @@ class TestUserUpdate:
         if res.json:
             assert res.json.get("success") is False
             assert "authorised" in res.json.get("message", "").lower()
-

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from stellar_api import StellarApiClient, unique_email
+from api_client import StellarApiClient, unique_email
 
 
 @pytest.mark.live
@@ -28,4 +28,3 @@ class TestUserLogin:
         if res.json:
             assert res.json.get("success") is False
             assert "incorrect" in res.json.get("message", "").lower()
-
