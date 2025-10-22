@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-import os
-import uuid
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, Optional
 
 import requests
-
-DEFAULT_BASE_URL = os.getenv("STELLAR_BASE_URL", "https://stellarburgers.nomoreparties.site/api")
+from urls import get_base_url
 
 
 @dataclass
@@ -25,7 +22,7 @@ class StellarApiClient:
     """
 
     def __init__(self, base_url: str | None = None, session: Optional[requests.Session] = None) -> None:
-        self.base_url = (base_url or DEFAULT_BASE_URL).rstrip("/")
+        self.base_url = (base_url or get_base_url()).rstrip("/")
         self.session = session or requests.Session()
         self._json_headers = {"Content-Type": "application/json"}
 
@@ -71,10 +68,6 @@ class StellarApiClient:
 
     def orders_get_user(self, token: str) -> ApiResponse:
         return self._request("GET", "/orders", token=token)
-
-
-def unique_email(domain: str = "example.com") -> str:
-    return f"user_{uuid.uuid4().hex[:12]}@{domain}"
 
 
 def ensure_api_available(client: StellarApiClient) -> bool:
