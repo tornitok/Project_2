@@ -16,11 +16,6 @@ class ApiResponse:
 
 
 class StellarApiClient:
-    """Minimal API client for Stellar Burgers used in tests.
-
-    Returns a simple ApiResponse with parsed JSON to keep tests clean.
-    """
-
     def __init__(self, base_url: str | None = None, session: Optional[requests.Session] = None) -> None:
         self.base_url = (base_url or get_base_url()).rstrip("/")
         self.session = session or requests.Session()
@@ -47,7 +42,6 @@ class StellarApiClient:
             payload = None
         return ApiResponse(status_code=resp.status_code, json=payload, text=text, headers=dict(resp.headers))
 
-    # High-level API methods
     def ingredients_get(self) -> ApiResponse:
         return self._request("GET", "/ingredients")
 

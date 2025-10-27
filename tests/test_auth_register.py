@@ -9,9 +9,10 @@ from api_client import StellarApiClient
 @pytest.mark.live
 class TestUserRegistration:
     @allure.title("Создание уникального пользователя: успешная регистрация")
-    def test_create_unique_user(self, client: StellarApiClient, new_user_credentials):
-        email, password, name = new_user_credentials
-        res = client.auth_register(email, password, name)
+    def test_create_unique_user(self, registered_user):
+        res = registered_user["register_res"]
+        email = registered_user["email"]
+        name = registered_user["name"]
         assert res.status_code == 200, f"Unexpected status: {res.status_code}, body: {res.text}"
         assert res.json is not None and res.json.get("success") is True
         assert res.json.get("user", {}).get("email") == email
@@ -34,7 +35,6 @@ class TestUserRegistration:
         payload = {"email": email, "password": password, "name": name}
         payload.pop(missing_field)
         res = client._request("POST", "/auth/register", json=payload)
-        # Для сервиса ожидаем 403 и сообщение о необходимых полях
         assert res.status_code == 403, f"Expected 403, got {res.status_code}: {res.text}"
         assert res.json is not None
         assert res.json.get("success") is False

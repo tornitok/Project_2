@@ -8,17 +8,12 @@ import pytest
 from api_client import StellarApiClient, ensure_api_available
 from helpers import unique_email, delete_user_safely
 from urls import get_base_url
-from data import DEFAULT_NAME, DEFAULT_PASSWORD, INVALID_INGREDIENT_HASHES
+from data import DEFAULT_NAME, DEFAULT_PASSWORD
 
 
 @pytest.fixture(scope="session")
-def base_url() -> str:
-    return get_base_url()
-
-
-@pytest.fixture(scope="session")
-def client(base_url: str) -> StellarApiClient:
-    return StellarApiClient(base_url=base_url)
+def client() -> StellarApiClient:
+    return StellarApiClient()
 
 
 @pytest.fixture()
@@ -41,8 +36,8 @@ def registered_user(client: StellarApiClient, new_user_credentials: Tuple[str, s
         "password": password,
         "name": name,
         "token": token,
+        "register_res": res,
     }
-    # Teardown: delete the user; enforce cleanup success
     deleted = delete_user_safely(client, email=email, password=password, token=token)
     if not deleted:
         raise RuntimeError("Teardown failed: user was not deleted from the system")
@@ -76,17 +71,9 @@ def all_ingredients(client: StellarApiClient) -> List[str]:
 
 @pytest.fixture()
 def valid_ingredients_subset(all_ingredients: List[str]) -> List[str]:
-    # pick 2-3 random ingredients for an order
     k = 3 if len(all_ingredients) >= 3 else max(1, len(all_ingredients))
     return random.sample(all_ingredients, k)
 
-
-@pytest.fixture()
-def invalid_ingredients() -> List[str]:
-    return INVALID_INGREDIENT_HASHES
-
-
-# Skip only tests marked `live` if API is unavailable
 
 def pytest_collection_modifyitems(config: pytest.Config, items: List[pytest.Item]) -> None:
     live_items = [item for item in items if item.get_closest_marker("live")]

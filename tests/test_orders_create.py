@@ -4,6 +4,7 @@ import pytest
 import allure
 
 from api_client import StellarApiClient
+from data import INVALID_INGREDIENT_HASHES
 
 
 @pytest.mark.live
@@ -37,8 +38,8 @@ class TestOrderCreation:
 
     @pytest.mark.skip(reason="Баг: при неверных хешах ингредиентов API возвращает 500 вместо 400; ждём фикса бэкенда")
     @allure.title("Создание заказа: с неверными хешами ингредиентов — ожидаем 400")
-    def test_create_order_with_invalid_ingredient_hashes(self, client: StellarApiClient, logged_in_user, invalid_ingredients):
-        res = client.orders_create(invalid_ingredients, token=logged_in_user["token"])
+    def test_create_order_with_invalid_ingredient_hashes(self, client: StellarApiClient, logged_in_user):
+        res = client.orders_create(INVALID_INGREDIENT_HASHES, token=logged_in_user["token"])
         assert res.status_code == 400, f"Expected 400, got {res.status_code}: {res.text}"
         assert res.json is not None
         assert res.json.get("success") is False
